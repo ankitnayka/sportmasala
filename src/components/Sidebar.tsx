@@ -10,6 +10,7 @@ const menuItems = [
     { name: 'Photo Gallery', icon: ImageIcon, href: '/photos' },
     { name: 'Web Stories', icon: BookOpen, href: '/stories' },
     { name: 'Polls', icon: BarChart2, href: '/polls' },
+    { name: 'Automation', icon: Smartphone, href: '/admin/automation' }, // Admin only technically, but added here for specific user request flow
 ];
 
 export default function Sidebar() {
