@@ -1,48 +1,29 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Model } from 'mongoose';
 
-const MatchSchema = new mongoose.Schema({
-    sport: {
-        type: String,
-        required: true,
-        enum: ['Cricket', 'Football', 'Other'],
-    },
-    series: {
-        type: String, // e.g., "ICC T20 WC", "Premier League"
-        required: true,
-    },
-    team1: {
-        type: String, // Name or Abbreviation
-        required: true,
-    },
-    team2: {
-        type: String,
-        required: true,
-    },
-    team1Score: {
-        type: String, // "180/4 (20.0)"
-        default: '',
-    },
-    team2Score: {
-        type: String,
-        default: '',
-    },
-    date: {
-        type: Date,
-        required: true,
-    },
-    venue: {
-        type: String,
-        required: true,
-    },
-    status: {
-        type: String,
-        enum: ['Upcoming', 'Live', 'Ended'],
-        default: 'Upcoming',
-    },
-    result: {
-        type: String, // "India won by 10 runs"
-        default: '',
-    },
-}, { timestamps: true });
+export interface IMatch {
+    team1: string;
+    team2: string;
+    date: Date;
+    venue: string;
+    status: 'scheduled' | 'live' | 'completed';
+    result?: string; // e.g., "India won by 10 runs"
+    score?: string; // e.g., "IND 180/4 vs PAK 170/9"
+    createdAt: Date;
+    updatedAt: Date;
+}
 
-export default mongoose.models.Match || mongoose.model('Match', MatchSchema);
+const MatchSchema = new Schema<IMatch>({
+    team1: { type: String, required: true },
+    team2: { type: String, required: true },
+    date: { type: Date, required: true },
+    venue: { type: String, required: true },
+    status: { type: String, enum: ['scheduled', 'live', 'completed'], default: 'scheduled' },
+    result: { type: String },
+    score: { type: String },
+}, {
+    timestamps: true,
+});
+
+const Match: Model<IMatch> = mongoose.models.Match || mongoose.model<IMatch>('Match', MatchSchema);
+
+export default Match;

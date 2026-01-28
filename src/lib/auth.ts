@@ -30,15 +30,20 @@ export async function getSession() {
     return await verifySession(token);
 }
 
-export async function createSession() {
+export async function createSession(user: { _id: string; role: string; email: string; username: string }) {
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-    const token = await signSession({ role: 'admin' });
+    const token = await signSession({
+        userId: user._id,
+        role: user.role,
+        email: user.email,
+        username: user.username
+    });
 
     const cookieStore = await cookies();
     cookieStore.set('admin_token', token, {
         expires,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production', // Ensure this is false on localhost (http)
         sameSite: 'lax',
         path: '/',
     });

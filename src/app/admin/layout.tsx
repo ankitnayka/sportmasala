@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import AdminLayoutWrapper from '@/components/admin/AdminLayoutWrapper';
 
 export const metadata: Metadata = {
     title: 'T20 Masala Admin',
@@ -13,9 +14,5 @@ export default function AdminLayout({
 }: {
     children: React.ReactNode;
 }) {
-    return (
-        <div className="min-h-screen bg-gray-100">
-            {children}
-        </div>
-    );
+    return <AdminLayoutWrapper>{children}</AdminLayoutWrapper>;
 }

@@ -1,25 +1,32 @@
 import { getArticles } from "@/lib/data";
 import NewsCard from "@/components/NewsCard";
 import AdPlaceholder from "@/components/AdPlaceholder";
-import MatchTicker from "@/components/MatchTicker";
 import EditorsChoice from "@/components/EditorsChoice";
+import WebStory from "@/models/WebStory";
+import dbConnect from "@/lib/db";
 import Link from "next/link";
 import { MoveRight } from "lucide-react";
+import FeaturedSeriesWidget from "@/components/FeaturedSeriesWidget";
 
 export default async function Home() {
-  const articles = await getArticles();
+  await dbConnect();
+
+  // Fetch Articles and Stories in parallel for performance
+  const [articles, webStoriesData] = await Promise.all([
+    getArticles(),
+    WebStory.find({ isPublished: true }).sort({ createdAt: -1 }).limit(10)
+  ]);
 
   // Assuming first 4 for Editors Choice
   const editorsChoiceArticles = articles?.slice(0, 4) || [];
-  const webStories = articles?.slice(4, 8) || []; // Mock web stories from articles
-  const latestNews = articles?.slice(8) || [];
+  // Use real web stories
+  const webStories = webStoriesData || [];
+  const latestNews = articles?.slice(4) || []; // Adjusted slice since we aren't using 4 for stories anymore
 
   return (
     <div className="bg-[#121212] min-h-screen">
-      {/* Match Ticker */}
-      <MatchTicker />
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
+      <div className="w-full py-6">
 
         {/* Top Ad */}
         <AdPlaceholder slot="header" className="mb-8" />
@@ -39,23 +46,28 @@ export default async function Home() {
                   <span className="w-1 h-4 bg-lime-500 rounded-sm"></span>
                   Web Stories
                 </h2>
-                <Link href="/stories" className="text-lime-500 text-xs font-bold flex items-center gap-1 hover:underline">
+                <Link href="/web-stories" className="text-lime-500 text-xs font-bold flex items-center gap-1 hover:underline">
                   View All <MoveRight className="h-3 w-3" />
                 </Link>
               </div>
               <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-                {webStories.map((story, i) => (
-                  <div key={i} className="flex-shrink-0 w-32 h-48 bg-gray-800 rounded-xl overflow-hidden relative group cursor-pointer border border-gray-700">
-                    {/* Placeholder Image */}
-                    <div className={`absolute inset-0 ${i % 2 === 0 ? 'bg-purple-900' : 'bg-blue-900'}`}></div>
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black"></div>
+                {webStories.map((story: any, i: number) => (
+                  <Link href={`/web-stories/${story.slug}`} key={story._id || i} className="flex-shrink-0 w-32 h-48 bg-gray-800 rounded-xl overflow-hidden relative group cursor-pointer border border-gray-700 hover:border-lime-500 transition-colors">
+                    {/* Cover Image */}
+                    {story.coverImage && (
+                      <img src={story.coverImage} alt={story.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black opacity-80"></div>
+
                     <div className="absolute bottom-3 left-3 right-3">
-                      <p className="text-white text-xs font-bold leading-tight line-clamp-3">{story.title}</p>
+                      <p className="text-white text-xs font-bold leading-tight line-clamp-3 group-hover:text-lime-400 transition-colors">{story.title}</p>
                     </div>
-                    <div className="absolute top-2 right-2 h-6 w-6 rounded-full border-2 border-lime-500 bg-black flex items-center justify-center">
+
+                    {/* Icon */}
+                    <div className="absolute top-2 right-2 h-6 w-6 rounded-full border-2 border-lime-500 bg-black/50 backdrop-blur-sm flex items-center justify-center">
                       <div className="h-2 w-2 bg-lime-500 rounded-full animate-ping"></div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -66,10 +78,22 @@ export default async function Home() {
                 <span className="w-1 h-4 bg-lime-500 rounded-sm"></span>
                 Latest News
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {latestNews.map(article => (
-                  <NewsCard key={article.slug} article={article} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                {latestNews.slice(0, 8).map((article, index) => (
+                  <div key={article.slug} className={index >= 3 ? 'hidden md:block' : ''}>
+                    <NewsCard article={article} />
+                  </div>
                 ))}
+              </div>
+
+              <div className="flex justify-center">
+                <Link
+                  href="/cricket"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-bold py-3 px-8 rounded-full border border-zinc-700 transition flex items-center gap-2 group"
+                >
+                  View All News
+                  <MoveRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </div>
             </div>
 
@@ -81,44 +105,8 @@ export default async function Home() {
             <AdPlaceholder slot="sidebar" />
 
             {/* Points Table Widget (Static Mock) */}
-            <div className="bg-[#1e1e1e] rounded-xl border border-gray-800 overflow-hidden">
-              <div className="bg-[#252525] px-4 py-3 border-b border-gray-800 flex justify-between items-center">
-                <h3 className="text-sm font-bold text-white uppercase">Points Table</h3>
-                <select className="bg-black text-xs text-gray-400 border border-gray-700 rounded px-2 py-1 outline-none">
-                  <option>IPL 2026</option>
-                </select>
-              </div>
-              <table className="w-full text-xs text-left text-gray-400">
-                <thead className="bg-[#2a2a2a] text-gray-200">
-                  <tr>
-                    <th className="px-3 py-2">Team</th>
-                    <th className="px-2 py-2 text-center">M</th>
-                    <th className="px-2 py-2 text-center">W</th>
-                    <th className="px-2 py-2 text-center">Pts</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-800">
-                  {[
-                    { name: 'CSK', m: 14, w: 10, pts: 20 },
-                    { name: 'MI', m: 14, w: 9, pts: 18 },
-                    { name: 'RCB', m: 14, w: 8, pts: 16 },
-                    { name: 'KKR', m: 14, w: 7, pts: 14 },
-                  ].map((team, idx) => (
-                    <tr key={team.name} className="hover:bg-[#252525]">
-                      <td className="px-3 py-3 flex items-center gap-2 font-bold text-white">
-                        <span className="text-gray-600">{idx + 1}</span> {team.name}
-                      </td>
-                      <td className="px-2 py-3 text-center">{team.m}</td>
-                      <td className="px-2 py-3 text-center">{team.w}</td>
-                      <td className="px-2 py-3 text-center font-bold text-white">{team.pts}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="p-3 bg-[#252525] text-center border-t border-gray-800">
-                <Link href="/schedule" className="text-lime-500 text-xs font-bold hover:underline">View Full Table</Link>
-              </div>
-            </div>
+            {/* Featured Series Stats Widget */}
+            <FeaturedSeriesWidget />
 
             {/* Featured Video (Static Mock) */}
             <div className="bg-[#1e1e1e] rounded-xl border border-gray-800 overflow-hidden">
@@ -139,6 +127,6 @@ export default async function Home() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

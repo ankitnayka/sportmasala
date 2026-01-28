@@ -26,6 +26,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          {/* Note: Ideally Navbar and TrendingBar should be in a specific layout file or here if global */}
         </ThemeProvider>
       </body>
     </html>

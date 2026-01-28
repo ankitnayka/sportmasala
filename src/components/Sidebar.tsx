@@ -8,7 +8,7 @@ const menuItems = [
     { name: 'Home', icon: Home, href: '/' },
     { name: 'Schedule', icon: Calendar, href: '/schedule' },
     { name: 'Photo Gallery', icon: ImageIcon, href: '/photos' },
-    { name: 'Web Stories', icon: BookOpen, href: '/stories' },
+    { name: 'Web Stories', icon: BookOpen, href: '/web-stories' },
     { name: 'Polls', icon: BarChart2, href: '/polls' },
     { name: 'Automation', icon: Smartphone, href: '/admin/automation' }, // Admin only technically, but added here for specific user request flow
 ];
@@ -17,7 +17,7 @@ export default function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] bg-sidebar border-r border-card-border hidden lg:flex flex-col overflow-y-auto">
+        <aside className="sticky top-32 w-64 h-[calc(100vh-8rem)] bg-sidebar border-r border-card-border hidden lg:flex flex-col overflow-y-auto flex-shrink-0">
             <div className="flex-1 py-6">
                 <nav className="space-y-1 px-4">
                     {menuItems.map((item) => {

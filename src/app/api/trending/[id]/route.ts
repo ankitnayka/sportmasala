@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Match from '@/models/Match';
+import TrendingTopic from '@/models/TrendingTopic';
 import { getSession } from '@/lib/auth';
 
 export async function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
@@ -12,8 +12,8 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
         }
         const { id } = await context.params;
         const body = await request.json();
-        const match = await Match.findByIdAndUpdate(id, body, { new: true });
-        return NextResponse.json(match);
+        const topic = await TrendingTopic.findByIdAndUpdate(id, body, { new: true });
+        return NextResponse.json(topic);
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -27,20 +27,8 @@ export async function DELETE(request: Request, context: { params: Promise<{ id: 
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
         const { id } = await context.params;
-        await Match.findByIdAndDelete(id);
+        await TrendingTopic.findByIdAndDelete(id);
         return NextResponse.json({ message: 'Deleted successfully' });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-}
-
-export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
-    try {
-        await dbConnect();
-        const { id } = await context.params;
-        const match = await Match.findById(id);
-        if (!match) return NextResponse.json({ error: 'Not Found' }, { status: 404 });
-        return NextResponse.json(match);
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

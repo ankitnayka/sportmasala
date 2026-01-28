@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface MatchFormProps {
@@ -12,30 +12,41 @@ export default function MatchForm({ initialData, isEdit = false }: MatchFormProp
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        sport: initialData?.sport || 'Cricket',
-        series: initialData?.series || '',
-        team1: initialData?.team1 || '',
-        team2: initialData?.team2 || '',
-        team1Score: initialData?.team1Score || '',
-        team2Score: initialData?.team2Score || '',
-        date: initialData?.date ? new Date(initialData.date).toISOString().slice(0, 16) : '',
-        venue: initialData?.venue || '',
-        status: initialData?.status || 'Upcoming',
-        result: initialData?.result || '',
+        team1: '',
+        team2: '',
+        date: '',
+        venue: '',
+        status: 'scheduled',
+        result: '',
+        score: '',
     });
 
-    const handleChange = (e: any) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    useEffect(() => {
+        if (initialData) {
+            // Format date for datetime-local input
+            const dateObj = new Date(initialData.date);
+            // Handling offset to show correct local time in input
+            const localIso = new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+
+            setFormData({
+                ...initialData,
+                date: localIso,
+            });
+        }
+    }, [initialData]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        const url = isEdit ? `/api/matches/${initialData._id}` : '/api/matches';
-        const method = isEdit ? 'PUT' : 'POST';
 
         try {
+            const url = isEdit ? `/api/matches/${initialData._id}` : '/api/matches';
+            const method = isEdit ? 'PUT' : 'POST';
+
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
@@ -46,74 +57,123 @@ export default function MatchForm({ initialData, isEdit = false }: MatchFormProp
 
             router.push('/admin/matches');
             router.refresh();
-        } catch (error: any) {
-            alert(error.message);
+        } catch (error) {
+            console.error('Error saving match:', error);
+            alert('Failed to save match');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded shadow max-w-4xl mx-auto">
+        <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Sport</label>
-                    <select name="sport" value={formData.sport} onChange={handleChange} className="mt-1 block w-full border rounded p-2">
-                        <option value="Cricket">Cricket</option>
-                        <option value="Football">Football</option>
-                        <option value="Other">Other</option>
-                    </select>
+                    <label className="block text-sm font-medium mb-1">Team 1</label>
+                    <input
+                        type="text"
+                        name="team1"
+                        value={formData.team1}
+                        onChange={handleChange}
+                        required
+                        className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                        placeholder="e.g. India"
+                    />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Series / League</label>
-                    <input required name="series" value={formData.series} onChange={handleChange} className="mt-1 block w-full border rounded p-2" placeholder="e.g. IPL 2026" />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Team 1</label>
-                    <input required name="team1" value={formData.team1} onChange={handleChange} className="mt-1 block w-full border rounded p-2" />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Team 2</label>
-                    <input required name="team2" value={formData.team2} onChange={handleChange} className="mt-1 block w-full border rounded p-2" />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Team 1 Score</label>
-                    <input name="team1Score" value={formData.team1Score} onChange={handleChange} className="mt-1 block w-full border rounded p-2" placeholder="e.g. 180/4" />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Team 2 Score</label>
-                    <input name="team2Score" value={formData.team2Score} onChange={handleChange} className="mt-1 block w-full border rounded p-2" placeholder="e.g. 175/9" />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Date & Time</label>
-                    <input required type="datetime-local" name="date" value={formData.date} onChange={handleChange} className="mt-1 block w-full border rounded p-2" />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Venue</label>
-                    <input required name="venue" value={formData.venue} onChange={handleChange} className="mt-1 block w-full border rounded p-2" />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                    <select name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full border rounded p-2">
-                        <option value="Upcoming">Upcoming</option>
-                        <option value="Live">Live</option>
-                        <option value="Ended">Ended</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Result / Status Note</label>
-                    <input name="result" value={formData.result} onChange={handleChange} className="mt-1 block w-full border rounded p-2" placeholder="e.g. India won by 10 runs" />
+                    <label className="block text-sm font-medium mb-1">Team 2</label>
+                    <input
+                        type="text"
+                        name="team2"
+                        value={formData.team2}
+                        onChange={handleChange}
+                        required
+                        className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                        placeholder="e.g. Australia"
+                    />
                 </div>
             </div>
 
-            <div className="flex justify-end gap-3">
-                <button type="button" onClick={() => router.back()} className="px-4 py-2 border rounded text-gray-600 hover:bg-gray-50">Cancel</button>
-                <button type="submit" disabled={loading} className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-bold disabled:opacity-50">
-                    {loading ? 'Saving...' : (isEdit ? 'Update Match' : 'Create Match')}
+            <div>
+                <label className="block text-sm font-medium mb-1">Date & Time</label>
+                <input
+                    type="datetime-local"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                />
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium mb-1">Venue</label>
+                <input
+                    type="text"
+                    name="venue"
+                    value={formData.venue}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                    placeholder="e.g. Eden Gardens, Kolkata"
+                />
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium mb-1">Match Status</label>
+                <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                >
+                    <option value="scheduled">Scheduled</option>
+                    <option value="live">🔴 Live</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+
+            {formData.status === 'completed' && (
+                <div className="space-y-4 border-t pt-4 mt-4">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Result Summary</label>
+                        <input
+                            type="text"
+                            name="result"
+                            value={formData.result}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                            placeholder="e.g. India won by 20 runs"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Score Details</label>
+                        <input
+                            type="text"
+                            name="score"
+                            value={formData.score}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                            placeholder="e.g. IND 200/4 - AUS 180 All Out"
+                        />
+                    </div>
+                </div>
+            )}
+
+            <div className="flex justify-end gap-4 mt-8">
+                <button
+                    type="button"
+                    onClick={() => router.back()}
+                    className="px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
+                >
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                >
+                    {loading ? 'Saving...' : isEdit ? 'Update Match' : 'Create Match'}
                 </button>
             </div>
         </form>
