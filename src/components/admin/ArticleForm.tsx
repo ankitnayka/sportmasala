@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ImageUpload from '@/components/admin/ImageUpload';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 
 interface ArticleFormProps {
     initialData?: any;
@@ -84,9 +85,11 @@ export default function ArticleForm({ initialData, isEdit = false }: ArticleForm
                     <textarea required name="excerpt" value={formData.excerpt} onChange={handleChange} rows={3} className="mt-1 block w-full border rounded p-2"></textarea>
                 </div>
                 <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Content (HTML Support)</label>
-                    <textarea required name="content" value={formData.content} onChange={handleChange} rows={12} className="mt-1 block w-full border rounded p-2 font-mono text-sm"></textarea>
-                    <p className="text-xs text-gray-500 mt-1">Accepts raw HTML or text. Use with caution.</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                    <RichTextEditor
+                        value={formData.content}
+                        onChange={(content) => setFormData(prev => ({ ...prev, content }))}
+                    />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Article Image</label>

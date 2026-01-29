@@ -9,5 +9,6 @@ export interface Article {
     author: string;
     publishedAt: string | Date; // ISO date string or Date object
     imageUrl?: string;
+    storyHighlights?: string[];
     tags?: string[];
 }

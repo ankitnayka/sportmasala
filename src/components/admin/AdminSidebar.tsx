@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, Calendar, TrendingUp, Users, LogOut, BookOpen } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, TrendingUp, Users, LogOut, BookOpen, Camera } from 'lucide-react';
 
 const menuItems = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Articles', href: '/admin/dashboard', icon: FileText }, // Reusing dashboard for now or split later
     { name: 'Matches', href: '/admin/matches', icon: Calendar },
     { name: 'Web Stories', href: '/admin/web-stories', icon: BookOpen },
+    { name: 'Photo Gallery', href: '/admin/gallery', icon: Camera },
     { name: 'Trending Topics', href: '/admin/trending', icon: TrendingUp },
     { name: 'User Management', href: '/admin/users', icon: Users },
 ];

@@ -1,4 +1,5 @@
 import { getArticleBySlug } from "@/lib/data";
+import Image from "next/image";
 import AdPlaceholder from "@/components/AdPlaceholder";
 import { notFound } from "next/navigation";
 import type { Metadata } from 'next';
@@ -64,10 +65,36 @@ export default async function ArticlePage(props: Props) {
                         <h1 className="text-3xl md:text-5xl font-bold text-white mt-2 mb-4 leading-tight">
                             {article.title}
                         </h1>
-                        <div className="flex items-center text-gray-400 text-sm">
+                        <div className="flex items-center text-gray-400 text-sm mb-6">
                             <span className="font-medium text-gray-200 mr-2">{article.author}</span>
                             <span>• {new Date(article.publishedAt).toLocaleDateString()}</span>
                         </div>
+
+                        {/* Article Image */}
+                        {article.imageUrl && (
+                            <div className="relative w-full h-[400px] mb-8 rounded-lg overflow-hidden">
+                                <Image
+                                    src={article.imageUrl}
+                                    alt={article.title}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 100vw"
+                                    priority
+                                />
+                            </div>
+                        )}
+
+                        {/* Story Highlights */}
+                        {article.storyHighlights && article.storyHighlights.length > 0 && (
+                            <div className="bg-[#1e1e1e] p-6 rounded-lg border border-gray-800 mb-8">
+                                <h3 className="text-lg font-bold text-white mb-4">Story Highlights:</h3>
+                                <ul className="space-y-2 list-disc list-inside text-gray-300">
+                                    {article.storyHighlights.map((highlight, index) => (
+                                        <li key={index}>{highlight}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </header>
 
                     {/* Content Area */}
