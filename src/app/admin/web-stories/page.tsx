@@ -57,47 +57,49 @@ export default function WebStoriesPage() {
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {stories.map((story: any) => (
-                    <div key={story._id} className="bg-white dark:bg-zinc-800 rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-zinc-700">
-                        <div className="relative aspect-[9/16] bg-gray-200">
+                    <div key={story._id} className="bg-card rounded-2xl overflow-hidden shadow-lg border border-card-border hover:border-accent/30 transition-all group">
+                        <div className="relative aspect-[9/16] bg-background/50">
                             {story.coverImage && (
                                 <img
                                     src={story.coverImage}
                                     alt={story.title}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                             )}
-                            <div className="absolute top-2 right-2 flex gap-2">
-                                <span className={`px-2 py-1 text-xs font-bold rounded ${story.isPublished ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'}`}>
+                            <div className="absolute top-4 right-4 flex gap-2">
+                                <span className={`px-3 py-1 text-[10px] font-bold rounded-full shadow-lg ${story.isPublished ? 'bg-green-500 text-white' : 'bg-background/80 text-foreground backdrop-blur-md'}`}>
                                     {story.isPublished ? 'PUBLISHED' : 'DRAFT'}
                                 </span>
                             </div>
                         </div>
-                        <div className="p-4">
-                            <h2 className="text-lg font-bold mb-2 line-clamp-2 dark:text-white">{story.title}</h2>
-                            <p className="text-xs text-gray-500 mb-4">
-                                {format(new Date(story.createdAt), 'MMM d, yyyy')} • {story.slides.length} Slides
+                        <div className="p-5">
+                            <h2 className="text-lg font-bold mb-2 line-clamp-2 text-foreground group-hover:text-accent transition-colors">{story.title}</h2>
+                            <p className="text-xs font-medium text-foreground/40 mb-6 flex items-center gap-2">
+                                <span>{format(new Date(story.createdAt), 'MMM d, yyyy')}</span>
+                                <span className="w-1 h-1 bg-foreground/20 rounded-full" />
+                                <span>{story.slides.length} Slides</span>
                             </p>
-                            <div className="flex justify-end gap-2">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-card-border/50">
                                 <Link
                                     href={`/admin/web-stories/${story._id}`}
-                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+                                    className="p-2.5 text-blue-500 hover:bg-blue-500/10 rounded-xl transition-all"
                                 >
-                                    <Edit size={18} />
+                                    <Edit size={20} />
                                 </Link>
                                 <button
                                     onClick={() => handleDelete(story._id)}
-                                    className="p-2 text-red-600 hover:bg-red-50 rounded"
+                                    className="p-2.5 text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                                 >
-                                    <Trash2 size={18} />
+                                    <Trash2 size={20} />
                                 </button>
                             </div>
                         </div>
                     </div>
                 ))}
                 {stories.length === 0 && (
-                    <div className="col-span-full py-12 text-center text-gray-500">
+                    <div className="col-span-full py-20 text-center text-foreground opacity-30 italic">
                         No stories found. Create your first one!
                     </div>
                 )}

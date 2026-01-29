@@ -70,11 +70,11 @@ export default function ImageUpload({ value, onChange, onRemove }: ImageUploadPr
 
             <div className="flex items-center gap-4">
                 <label className={`
-            flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 text-white rounded cursor-pointer hover:bg-gray-800 transition
+            flex items-center justify-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl cursor-pointer hover:brightness-110 shadow-lg font-bold transition-all active:scale-95
             ${isUploading ? 'opacity-50 pointer-events-none' : ''}
         `}>
                     {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-                    {isUploading ? 'Uploading...' : 'Upload Image'}
+                    {isUploading ? 'Uploading...' : 'Choose Image'}
                     <input
                         type="file"
                         disabled={isUploading}
@@ -87,7 +87,7 @@ export default function ImageUpload({ value, onChange, onRemove }: ImageUploadPr
                     <input
                         value={value}
                         disabled
-                        className="flex-1 bg-gray-50 border border-gray-200 text-gray-500 text-xs p-2 rounded truncate"
+                        className="flex-1 bg-background border border-card-border text-foreground/40 text-[10px] p-2 rounded-lg truncate font-mono"
                     />
                 )}
             </div>

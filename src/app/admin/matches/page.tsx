@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import { Trash2, Edit2, Plus } from 'lucide-react';
 
 interface Match {
     _id: string;
@@ -57,66 +58,84 @@ export default function AdminMatchesPage() {
     if (loading) return <div>Loading matches...</div>;
 
     return (
-        <div className="p-8">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">Manage Matches</h1>
+        <div className="p-8 max-w-7xl mx-auto space-y-8">
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+                    <span className="w-2 h-8 bg-accent rounded-full" />
+                    Manage Matches
+                </h1>
                 <Link
                     href="/admin/matches/new"
-                    className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90"
+                    className="bg-accent text-white px-6 py-3 rounded-xl hover:brightness-110 flex items-center gap-2 font-bold shadow-lg transition-all active:scale-95"
                 >
-                    + Add Match
+                    <Plus size={18} /> Add Match
                 </Link>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div className="bg-card border border-card-border rounded-2xl shadow-xl overflow-hidden transition-colors">
                 <table className="w-full text-left">
-                    <thead className="bg-gray-100 dark:bg-gray-700">
+                    <thead className="bg-background/50">
                         <tr>
-                            <th className="p-4">Date</th>
-                            <th className="p-4">Teams</th>
-                            <th className="p-4">Venue</th>
-                            <th className="p-4">Status</th>
-                            <th className="p-4 text-right">Actions</th>
+                            <th className="px-6 py-4 text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Schedule Info</th>
+                            <th className="px-6 py-4 text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Contestants</th>
+                            <th className="px-6 py-4 text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Venue Details</th>
+                            <th className="px-6 py-4 text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Match State</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-card-border">
                         {matches.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="p-8 text-center text-gray-500">
+                                <td colSpan={5} className="p-20 text-center opacity-40 italic">
                                     No matches found.
                                 </td>
                             </tr>
                         ) : (
                             matches.map((match) => (
-                                <tr key={match._id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                    <td className="p-4">
-                                        {format(new Date(match.date), 'MMM d, yyyy h:mm a')}
+                                <tr key={match._id} className="group hover:bg-accent/5 transition-all">
+                                    <td className="px-6 py-4">
+                                        <div className="text-sm font-bold text-foreground group-hover:text-accent transition-colors">
+                                            {format(new Date(match.date), 'MMM d, yyyy')}
+                                        </div>
+                                        <div className="text-[10px] opacity-30 mt-0.5 font-mono">
+                                            {format(new Date(match.date), 'h:mm a')}
+                                        </div>
                                     </td>
-                                    <td className="p-4 font-semibold">
-                                        {match.team1} vs {match.team2}
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-base font-bold text-foreground">{match.team1}</span>
+                                            <span className="text-[10px] font-black opacity-20 italic">VS</span>
+                                            <span className="text-base font-bold text-foreground">{match.team2}</span>
+                                        </div>
                                     </td>
-                                    <td className="p-4">{match.venue}</td>
-                                    <td className="p-4">
-                                        <span className={`px-2 py-1 rounded-full text-xs ${match.status === 'live' ? 'bg-red-100 text-red-800' :
-                                                match.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                    'bg-yellow-100 text-yellow-800'
+                                    <td className="px-6 py-4">
+                                        <div className="text-sm font-medium text-foreground/60 leading-tight max-w-[200px] truncate">
+                                            {match.venue}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`px-3 py-1 rounded-full text-[10px] font-black tracking-tighter uppercase border ${match.status === 'live' ? 'bg-red-500/10 text-red-500 border-red-500/20 animate-pulse' :
+                                            match.status === 'completed' ? 'bg-green-500/10 text-green-500 border-green-500/20' :
+                                                'bg-amber-500/10 text-amber-500 border-amber-500/20'
                                             }`}>
-                                            {match.status.toUpperCase()}
+                                            {match.status === 'live' && '🔴 '}{match.status}
                                         </span>
                                     </td>
-                                    <td className="p-4 text-right space-x-2">
-                                        <Link
-                                            href={`/admin/matches/edit/${match._id}`}
-                                            className="text-blue-600 hover:underline"
-                                        >
-                                            Edit
-                                        </Link>
-                                        <button
-                                            onClick={() => handleDelete(match._id)}
-                                            className="text-red-600 hover:underline"
-                                        >
-                                            Delete
-                                        </button>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                                            <Link
+                                                href={`/admin/matches/edit/${match._id}`}
+                                                className="p-2.5 text-blue-500 hover:bg-blue-500/10 rounded-xl transition-all"
+                                            >
+                                                <Edit2 size={18} />
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDelete(match._id)}
+                                                className="p-2.5 text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))

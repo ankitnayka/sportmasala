@@ -21,6 +21,7 @@ export default function ArticleForm({ initialData, isEdit = false }: ArticleForm
         author: initialData?.author || 'T20 Masala',
         status: initialData?.status || 'draft',
         imageUrl: initialData?.imageUrl || '',
+        tags: initialData?.tags?.join(', ') || '',
     });
 
     const handleChange = (e: any) => {
@@ -41,10 +42,15 @@ export default function ArticleForm({ initialData, isEdit = false }: ArticleForm
         const url = isEdit ? `/api/articles/${initialData.slug}` : '/api/articles';
         const method = isEdit ? 'PUT' : 'POST';
 
+        const payload = {
+            ...formData,
+            tags: formData.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '')
+        };
+
         const res = await fetch(url, {
             method,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(payload),
         });
 
         if (res.ok) {
@@ -57,19 +63,19 @@ export default function ArticleForm({ initialData, isEdit = false }: ArticleForm
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded shadow">
+        <form onSubmit={handleSubmit} className="space-y-6 bg-card border border-card-border p-8 rounded-lg shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Title</label>
-                    <input required name="title" value={formData.title} onChange={handleChange} className="mt-1 block w-full border rounded p-2" />
+                    <label className="block text-sm font-medium text-foreground opacity-70">Title</label>
+                    <input required name="title" value={formData.title} onChange={handleChange} className="mt-1 block w-full border border-card-border bg-background text-foreground rounded p-2 focus:ring-2 focus:ring-accent outline-hidden" />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Slug (URL)</label>
-                    <input required name="slug" value={formData.slug} onChange={handleChange} className="mt-1 block w-full border rounded p-2" placeholder="e.g. india-wins-wc" />
+                    <label className="block text-sm font-medium text-foreground opacity-70">Slug (URL)</label>
+                    <input required name="slug" value={formData.slug} onChange={handleChange} className="mt-1 block w-full border border-card-border bg-background text-foreground rounded p-2 focus:ring-2 focus:ring-accent outline-hidden" placeholder="e.g. india-wins-wc" />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Category</label>
-                    <select name="category" value={formData.category} onChange={handleChange} className="mt-1 block w-full border rounded p-2">
+                    <label className="block text-sm font-medium text-foreground opacity-70">Category</label>
+                    <select name="category" value={formData.category} onChange={handleChange} className="mt-1 block w-full border border-card-border bg-background text-foreground rounded p-2 focus:ring-2 focus:ring-accent outline-hidden">
                         <option value="Cricket">Cricket</option>
                         <option value="Football">Football</option>
                         <option value="World">World</option>
@@ -77,22 +83,22 @@ export default function ArticleForm({ initialData, isEdit = false }: ArticleForm
                     </select>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Author</label>
-                    <input required name="author" value={formData.author} onChange={handleChange} className="mt-1 block w-full border rounded p-2" />
+                    <label className="block text-sm font-medium text-foreground opacity-70">Author</label>
+                    <input required name="author" value={formData.author} onChange={handleChange} className="mt-1 block w-full border border-card-border bg-background text-foreground rounded p-2 focus:ring-2 focus:ring-accent outline-hidden" />
                 </div>
                 <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Excerpt</label>
-                    <textarea required name="excerpt" value={formData.excerpt} onChange={handleChange} rows={3} className="mt-1 block w-full border rounded p-2"></textarea>
+                    <label className="block text-sm font-medium text-foreground opacity-70">Excerpt</label>
+                    <textarea required name="excerpt" value={formData.excerpt} onChange={handleChange} rows={3} className="mt-1 block w-full border border-card-border bg-background text-foreground rounded p-2 focus:ring-2 focus:ring-accent outline-hidden"></textarea>
                 </div>
                 <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                    <label className="block text-sm font-medium text-foreground opacity-70 mb-2">Content</label>
                     <RichTextEditor
                         value={formData.content}
                         onChange={(content) => setFormData(prev => ({ ...prev, content }))}
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Article Image</label>
+                    <label className="block text-sm font-medium text-foreground opacity-70 mb-2">Article Image</label>
                     <ImageUpload
                         value={formData.imageUrl}
                         onChange={handleImageChange}
@@ -100,16 +106,20 @@ export default function ArticleForm({ initialData, isEdit = false }: ArticleForm
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                    <select name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full border rounded p-2">
+                    <label className="block text-sm font-medium text-foreground opacity-70">Status</label>
+                    <select name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full border border-card-border bg-background text-foreground rounded p-2 focus:ring-2 focus:ring-accent outline-hidden">
                         <option value="draft">Draft</option>
                         <option value="published">Published</option>
                     </select>
                 </div>
+                <div className="col-span-2">
+                    <label className="block text-sm font-medium text-foreground opacity-70">Tags (comma separated)</label>
+                    <input name="tags" value={formData.tags} onChange={handleChange} className="mt-1 block w-full border border-card-border bg-background text-foreground rounded p-2 focus:ring-2 focus:ring-accent outline-hidden" placeholder="e.g. cricket, india, wpl" />
+                </div>
             </div>
 
             <div className="flex justify-end">
-                <button type="submit" className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 font-bold">
+                <button type="submit" className="bg-accent text-white px-8 py-3 rounded-lg hover:brightness-110 font-bold transition-all shadow-lg active:scale-95">
                     {isEdit ? 'Update Article' : 'Publish Article'}
                 </button>
             </div>

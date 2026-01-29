@@ -77,13 +77,16 @@ export default function TrendingAdminPage() {
                 body: JSON.stringify(formData),
             });
 
-            if (!res.ok) throw new Error('Failed to save');
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Failed to save');
+            }
 
             await fetchTopics();
             handleCancel();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error saving', error);
-            alert('Failed to save topic');
+            alert(error.message || 'Failed to save topic');
         }
     };
 
@@ -118,80 +121,83 @@ export default function TrendingAdminPage() {
             </h1>
 
             {/* Create/Edit Form */}
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8 border border-gray-100 dark:border-gray-700">
-                <h2 className="text-xl font-semibold mb-4">{isEditing ? 'Edit Topic' : 'Add New Topic'}</h2>
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-card border border-card-border p-8 rounded-xl shadow-lg mb-8 transition-colors">
+                <h2 className="text-xl font-bold mb-6 text-foreground">{isEditing ? 'Edit Topic' : 'Add New Topic'}</h2>
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium mb-1">Display Name</label>
+                        <label className="block text-sm font-medium mb-1 opacity-70">Display Name</label>
                         <input
                             type="text"
                             value={formData.name}
                             onChange={handleNameChange}
                             required
                             placeholder="e.g. WPL 2026"
-                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                            className="w-full p-2.5 border border-card-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">Slug (URL)</label>
+                        <label className="block text-sm font-medium mb-1 opacity-70">Slug (URL)</label>
                         <input
                             type="text"
                             value={formData.slug}
                             onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                             required
                             placeholder="e.g. wpl-2026"
-                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 font-mono text-sm"
+                            className="w-full p-2.5 border border-card-border rounded-lg bg-background text-foreground font-mono text-sm focus:ring-2 focus:ring-accent outline-hidden transition-all"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">Search Tag (Internal)</label>
+                        <label className="block text-sm font-medium mb-1 opacity-70">Search Tag (Internal)</label>
                         <input
                             type="text"
                             value={formData.searchQuery}
                             onChange={(e) => setFormData({ ...formData, searchQuery: e.target.value })}
                             required
                             placeholder="e.g. wpl"
-                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                            className="w-full p-2.5 border border-card-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                         />
-                        <p className="text-xs text-gray-400 mt-1">Articles with this tag will be shown.</p>
+                        <p className="text-xs text-foreground/40 mt-1.5 italic">Articles with this tag will be shown.</p>
                     </div>
                     <div className="flex gap-4">
                         <div className="flex-1">
-                            <label className="block text-sm font-medium mb-1">Priority</label>
+                            <label className="block text-sm font-medium mb-1 opacity-70">Priority</label>
                             <input
                                 type="number"
                                 value={formData.priority}
-                                onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
-                                className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                                onChange={(e) => {
+                                    const val = parseInt(e.target.value);
+                                    setFormData({ ...formData, priority: isNaN(val) ? 0 : val });
+                                }}
+                                className="w-full p-2.5 border border-card-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                             />
-                            <p className="text-xs text-gray-400 mt-1">Lower number = First in list.</p>
+                            <p className="text-xs text-foreground/40 mt-1.5 italic">Lower number = First in list.</p>
                         </div>
                         <div className="flex items-center pt-6">
-                            <label className="flex items-center cursor-pointer">
+                            <label className="flex items-center cursor-pointer group">
                                 <input
                                     type="checkbox"
                                     checked={formData.isActive}
                                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                                    className="w-5 h-5 accent-primary"
+                                    className="w-5 h-5 accent-accent"
                                 />
-                                <span className="ml-2 font-medium">Active</span>
+                                <span className="ml-2 font-medium group-hover:text-accent transition-colors">Active</span>
                             </label>
                         </div>
                     </div>
 
-                    <div className="md:col-span-2 flex justify-end gap-3 mt-4">
+                    <div className="md:col-span-2 flex justify-end gap-3 mt-6 pt-6 border-t border-card-border">
                         {isEditing && (
                             <button
                                 type="button"
                                 onClick={handleCancel}
-                                className="px-4 py-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                className="px-5 py-2.5 text-foreground/50 hover:text-foreground transition-colors"
                             >
                                 Cancel
                             </button>
                         )}
                         <button
                             type="submit"
-                            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 flex items-center gap-2"
+                            className="bg-accent text-white px-8 py-2.5 rounded-xl flex items-center gap-2 shadow-lg font-bold hover:brightness-110 active:scale-95 transition-all"
                         >
                             {isEditing ? <Edit2 size={16} /> : <Plus size={16} />}
                             {isEditing ? 'Update Topic' : 'Add Topic'}
@@ -201,34 +207,34 @@ export default function TrendingAdminPage() {
             </div>
 
             {/* List */}
-            <div className="space-y-3">
+            <div className="space-y-4">
                 {topics.map((topic) => (
-                    <div key={topic._id} className="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
-                        <div className="flex items-center gap-4">
-                            <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center font-bold text-gray-500">
+                    <div key={topic._id} className="flex items-center justify-between bg-card p-5 rounded-xl shadow-sm border border-card-border hover:border-accent/30 transition-all group">
+                        <div className="flex items-center gap-5">
+                            <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center font-bold text-foreground/40 shadow-inner group-hover:text-accent group-hover:bg-accent/5 transition-all">
                                 {topic.priority}
                             </div>
                             <div>
-                                <h3 className="font-bold text-lg">{topic.name}</h3>
-                                <div className="flex gap-2 text-xs text-gray-500 font-mono">
-                                    <span className="bg-gray-100 dark:bg-gray-700 px-1 rounded">/{topic.slug}</span>
-                                    <span className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-1 rounded">tag: {topic.searchQuery}</span>
-                                    {!topic.isActive && <span className="bg-red-100 text-red-600 px-1 rounded">INACTIVE</span>}
+                                <h3 className="font-bold text-lg text-foreground">{topic.name}</h3>
+                                <div className="flex gap-2 text-xs font-mono mt-1">
+                                    <span className="bg-background text-foreground/40 px-2 py-0.5 rounded border border-card-border">/{topic.slug}</span>
+                                    <span className="bg-accent/10 text-accent px-2 py-0.5 rounded border border-accent/20">tag: {topic.searchQuery}</span>
+                                    {!topic.isActive && <span className="bg-red-500/10 text-red-500 px-2 py-0.5 rounded border border-red-500/20 font-bold uppercase tracking-tighter">INACTIVE</span>}
                                 </div>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
                                 onClick={() => handleEdit(topic)}
-                                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full"
+                                className="p-2.5 text-blue-500 hover:bg-blue-500/10 rounded-xl transition-colors"
                             >
-                                <Edit2 size={18} />
+                                <Edit2 size={20} />
                             </button>
                             <button
                                 onClick={() => handleDelete(topic._id)}
-                                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full"
+                                className="p-2.5 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
                             >
-                                <Trash2 size={18} />
+                                <Trash2 size={20} />
                             </button>
                         </div>
                     </div>

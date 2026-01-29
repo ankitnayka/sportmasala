@@ -34,12 +34,13 @@ export default async function TopicPage({ params }: PageProps) {
         notFound();
     }
 
-    // 2. Find articles containing the search query tag
-    // We use regex for a flexible match or exact match on tags array. 
-    // Assuming 'tags' in Article is an array of strings.
+    // 2. Find articles containing the search query tag or in the title
     const articles = await Article.find({
         status: 'published',
-        tags: { $in: [topic.searchQuery] }
+        $or: [
+            { tags: { $in: [topic.searchQuery] } },
+            { title: { $regex: topic.searchQuery, $options: 'i' } }
+        ]
     }).sort({ publishedAt: -1 }).limit(20);
 
     return (

@@ -12,9 +12,9 @@ export default function AdminLayoutWrapper({ children }: { children: React.React
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex">
+        <div className="min-h-screen bg-background text-foreground flex transition-colors duration-300">
             <AdminSidebar />
-            <main className="flex-1 ml-64 min-h-screen">
+            <main className="flex-1 ml-64 min-h-screen p-0">
                 {children}
             </main>
         </div>

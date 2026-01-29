@@ -19,6 +19,7 @@ export async function verifySession(token: string) {
         });
         return payload;
     } catch (error) {
+        console.error("Auth Debug - Verify Failed:", error);
         return null;
     }
 }

@@ -66,66 +66,66 @@ export default function MatchForm({ initialData, isEdit = false }: MatchFormProp
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl bg-card border border-card-border p-8 rounded-xl shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm font-medium mb-1">Team 1</label>
+                    <label className="block text-sm font-medium mb-1 opacity-70">Team 1</label>
                     <input
                         type="text"
                         name="team1"
                         value={formData.team1}
                         onChange={handleChange}
                         required
-                        className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                        className="w-full p-2 border border-card-border rounded bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                         placeholder="e.g. India"
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">Team 2</label>
+                    <label className="block text-sm font-medium mb-1 opacity-70">Team 2</label>
                     <input
                         type="text"
                         name="team2"
                         value={formData.team2}
                         onChange={handleChange}
                         required
-                        className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                        className="w-full p-2 border border-card-border rounded bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                         placeholder="e.g. Australia"
                     />
                 </div>
             </div>
 
             <div>
-                <label className="block text-sm font-medium mb-1">Date & Time</label>
+                <label className="block text-sm font-medium mb-1 opacity-70">Date & Time</label>
                 <input
                     type="datetime-local"
                     name="date"
                     value={formData.date}
                     onChange={handleChange}
                     required
-                    className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                    className="w-full p-2 border border-card-border rounded bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                 />
             </div>
 
             <div>
-                <label className="block text-sm font-medium mb-1">Venue</label>
+                <label className="block text-sm font-medium mb-1 opacity-70">Venue</label>
                 <input
                     type="text"
                     name="venue"
                     value={formData.venue}
                     onChange={handleChange}
                     required
-                    className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                    className="w-full p-2 border border-card-border rounded bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                     placeholder="e.g. Eden Gardens, Kolkata"
                 />
             </div>
 
             <div>
-                <label className="block text-sm font-medium mb-1">Match Status</label>
+                <label className="block text-sm font-medium mb-1 opacity-70">Match Status</label>
                 <select
                     name="status"
                     value={formData.status}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                    className="w-full p-2 border border-card-border rounded bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                 >
                     <option value="scheduled">Scheduled</option>
                     <option value="live">🔴 Live</option>
@@ -134,26 +134,26 @@ export default function MatchForm({ initialData, isEdit = false }: MatchFormProp
             </div>
 
             {formData.status === 'completed' && (
-                <div className="space-y-4 border-t pt-4 mt-4">
+                <div className="space-y-4 border-t border-card-border pt-4 mt-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1">Result Summary</label>
+                        <label className="block text-sm font-medium mb-1 opacity-70">Result Summary</label>
                         <input
                             type="text"
                             name="result"
                             value={formData.result}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                            className="w-full p-2 border border-card-border rounded bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                             placeholder="e.g. India won by 20 runs"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">Score Details</label>
+                        <label className="block text-sm font-medium mb-1 opacity-70">Score Details</label>
                         <input
                             type="text"
                             name="score"
                             value={formData.score}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                            className="w-full p-2 border border-card-border rounded bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                             placeholder="e.g. IND 200/4 - AUS 180 All Out"
                         />
                     </div>
@@ -164,14 +164,14 @@ export default function MatchForm({ initialData, isEdit = false }: MatchFormProp
                 <button
                     type="button"
                     onClick={() => router.back()}
-                    className="px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
+                    className="px-4 py-2 text-foreground/50 hover:text-foreground transition-colors"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
                     disabled={loading}
-                    className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                    className="bg-accent text-white px-8 py-3 rounded-lg hover:brightness-110 disabled:opacity-50 font-bold shadow-lg transition-all active:scale-95"
                 >
                     {loading ? 'Saving...' : isEdit ? 'Update Match' : 'Create Match'}
                 </button>

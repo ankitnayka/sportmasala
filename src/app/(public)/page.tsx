@@ -7,6 +7,9 @@ import dbConnect from "@/lib/db";
 import Link from "next/link";
 import { MoveRight } from "lucide-react";
 import FeaturedSeriesWidget from "@/components/FeaturedSeriesWidget";
+import PollCard from "@/components/PollCard";
+import FeaturedVideoWidget from "@/components/FeaturedVideoWidget";
+
 
 export default async function Home() {
   await dbConnect();
@@ -108,21 +111,12 @@ export default async function Home() {
             {/* Featured Series Stats Widget */}
             <FeaturedSeriesWidget />
 
-            {/* Featured Video (Static Mock) */}
-            <div className="bg-[#1e1e1e] rounded-xl border border-gray-800 overflow-hidden">
-              <div className="relative aspect-video bg-black group cursor-pointer">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition">
-                    <div className="h-10 w-10 rounded-full bg-lime-500 flex items-center justify-center">
-                      <div className="w-0 h-0 border-t-4 border-t-transparent border-l-8 border-l-black border-b-4 border-b-transparent ml-1"></div>
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black to-transparent">
-                  <p className="text-white text-sm font-bold truncate">Exclusive: Interview with Captain</p>
-                </div>
-              </div>
-            </div>
+            {/* Poll Widget */}
+            <PollCard />
+
+
+            {/* Featured Video (Dynamic) */}
+            <FeaturedVideoWidget />
 
           </div>
         </div>

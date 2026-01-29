@@ -87,60 +87,72 @@ export default function UsersPage() {
     if (loading) return <div className="p-8">Loading users...</div>;
 
     return (
-        <div className="p-8 max-w-6xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold flex items-center gap-2">
-                    <Users className="text-blue-600" />
+        <div className="p-8 max-w-6xl mx-auto space-y-8">
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold flex items-center gap-3 text-foreground">
+                    <Users className="text-accent" size={32} />
                     User Management
                 </h1>
                 <button
                     onClick={() => setShowForm(!showForm)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                    className="bg-accent text-white px-6 py-3 rounded-xl hover:brightness-110 flex items-center gap-2 font-bold shadow-lg transition-all active:scale-95"
                 >
                     <Plus size={18} /> Add New User
                 </button>
             </div>
 
             {showForm && (
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-8 border border-gray-200 dark:border-gray-700">
-                    <h2 className="text-xl font-bold mb-4">Create New Admin</h2>
-                    <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input
-                            type="text"
-                            placeholder="Username"
-                            required
-                            className="p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-                            value={formData.username}
-                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        />
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            required
-                            className="p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Mobile"
-                            required
-                            className="p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-                            value={formData.mobile}
-                            onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                        />
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            required
-                            className="p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        />
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-medium mb-1">Role</label>
+                <div className="bg-card border border-card-border p-8 rounded-2xl shadow-xl transition-all animate-in slide-in-from-top duration-300">
+                    <h2 className="text-xl font-bold mb-6 text-foreground">Create New Admin</h2>
+                    <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold opacity-40 uppercase ml-1">Username</label>
+                            <input
+                                type="text"
+                                placeholder="e.g. admin_josh"
+                                required
+                                className="w-full p-3 border border-card-border rounded-xl bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
+                                value={formData.username}
+                                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold opacity-40 uppercase ml-1">Email Address</label>
+                            <input
+                                type="email"
+                                placeholder="admin@t20masala.com"
+                                required
+                                className="w-full p-3 border border-card-border rounded-xl bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold opacity-40 uppercase ml-1">Mobile Number</label>
+                            <input
+                                type="text"
+                                placeholder="+91 ..."
+                                required
+                                className="w-full p-3 border border-card-border rounded-xl bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
+                                value={formData.mobile}
+                                onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold opacity-40 uppercase ml-1">Password</label>
+                            <input
+                                type="password"
+                                placeholder="••••••••"
+                                required
+                                className="w-full p-3 border border-card-border rounded-xl bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            />
+                        </div>
+                        <div className="md:col-span-2 space-y-1">
+                            <label className="text-xs font-bold opacity-40 uppercase ml-1">Role & Permissions</label>
                             <select
-                                className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                                className="w-full p-3 border border-card-border rounded-xl bg-background text-foreground focus:ring-2 focus:ring-accent outline-hidden transition-all"
                                 value={formData.role}
                                 onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
                             >
@@ -148,17 +160,17 @@ export default function UsersPage() {
                                 <option value="super_admin">Super Admin (Can manage Everything)</option>
                             </select>
                         </div>
-                        <div className="md:col-span-2 flex justify-end gap-3 mt-2">
+                        <div className="md:col-span-2 flex justify-end gap-4 mt-4 pt-6 border-t border-card-border">
                             <button
                                 type="button"
                                 onClick={() => setShowForm(false)}
-                                className="px-4 py-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                className="px-6 py-3 text-foreground/50 hover:text-foreground font-medium transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+                                className="bg-accent text-white px-10 py-3 rounded-xl font-bold shadow-lg hover:brightness-110 active:scale-95 transition-all"
                             >
                                 Create User
                             </button>
@@ -167,48 +179,48 @@ export default function UsersPage() {
                 </div>
             )}
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-900">
+            <div className="bg-card border border-card-border rounded-2xl shadow-xl overflow-hidden transition-colors">
+                <table className="min-w-full divide-y divide-card-border">
+                    <thead className="bg-background/50">
                         <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th className="px-6 py-4 text-left text-[10px] font-bold text-foreground/40 uppercase tracking-widest">User Profile</th>
+                            <th className="px-6 py-4 text-left text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Contact Info</th>
+                            <th className="px-6 py-4 text-left text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Role</th>
+                            <th className="px-6 py-4 text-left text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Account Status</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody className="divide-y divide-card-border">
                         {users.map((user) => (
-                            <tr key={user._id}>
+                            <tr key={user._id} className="hover:bg-accent/5 transition-colors group">
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="flex items-center">
-                                        <div className="h-8 w-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                                        <div className="h-10 w-10 rounded-xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center font-bold text-lg shadow-sm">
                                             {(user.username || '?').charAt(0).toUpperCase()}
                                         </div>
                                         <div className="ml-4">
-                                            <div className="text-sm font-medium text-gray-900 dark:text-white">{user.username || 'Unknown User'}</div>
-                                            <div className="text-xs text-gray-500">ID: {user._id.slice(-6)}</div>
+                                            <div className="text-sm font-bold text-foreground group-hover:text-accent transition-colors">{user.username || 'Unknown User'}</div>
+                                            <div className="text-[10px] font-mono opacity-30 mt-0.5">#{user._id.slice(-6).toUpperCase()}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-sm text-gray-900 dark:text-gray-300">{user.email}</div>
-                                    <div className="text-sm text-gray-500">{user.mobile}</div>
+                                    <div className="text-sm font-medium text-foreground/70">{user.email}</div>
+                                    <div className="text-xs text-foreground/30 mt-0.5">{user.mobile}</div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     {user.role === 'super_admin' ? (
-                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800 flex items-center gap-1 w-fit">
-                                            <Shield size={12} /> Super Admin
+                                        <span className="px-3 py-1 inline-flex text-[10px] font-bold rounded-full bg-accent/10 text-accent border border-accent/20 items-center gap-1.5 uppercase tracking-wider">
+                                            <Shield size={10} /> Super Admin
                                         </span>
                                     ) : (
-                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                        <span className="px-3 py-1 inline-flex text-[10px] font-bold rounded-full bg-foreground/5 text-foreground/50 border border-foreground/10 uppercase tracking-wider">
                                             Sub Admin
                                         </span>
                                     )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                    <span className={`px-3 py-1 inline-flex text-[10px] font-bold rounded-full border ${user.isActive ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'} uppercase tracking-wider`}>
                                         {user.isActive ? 'Active' : 'Inactive'}
                                     </span>
                                 </td>
@@ -216,9 +228,9 @@ export default function UsersPage() {
                                     {user.role !== 'super_admin' && (
                                         <button
                                             onClick={() => handleDelete(user._id)}
-                                            className="text-red-600 hover:text-red-900"
+                                            className="p-2.5 text-red-500 hover:bg-red-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
                                         >
-                                            <Trash2 size={18} />
+                                            <Trash2 size={20} />
                                         </button>
                                     )}
                                 </td>
